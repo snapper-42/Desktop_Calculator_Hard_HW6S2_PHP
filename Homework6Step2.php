@@ -259,6 +259,68 @@
         <?php
             include 'modUtilities.php';
             
+            $intTotal = "";
+            
+            // Non-procedurized piece of code at the top.
+            if (IsValidData( ) == true )
+            {
+                //$inTotal = DoCalculations( );
+            }
+            
+            // --------------------------------------------------------------------------------
+            // Name: Validation
+            // Abstract:  Validate the data in the textboxes
+            // --------------------------------------------------------------------------------
+            function IsValidData(  )
+            {
+                $intWidth = GetFormValue( "txtWidth", "" );
+                $intDepth = GetFormValue( "txtDepth", "" );
+                $intSquareFeet = GetFormValue("txtPricePerFoot", "" );
+                echo "'$intWidth' " . "'$intDepth' " . "'$intSquareFeet'";
+                
+                // echo "Value 1 = '" . $intValue1 . "'<br />\n";
+                
+                // Get the value of the textbox's and combobox
+                $blnIsValidData = true;
+                $strErrorMessage = "Server says, Please correct the following error(s): " . '\n';
+                
+                // txtValue1
+                if ( empty($intWidth) == false )
+                {
+                    // Numeric?
+                    if ( is_numeric($intWidth) == false )
+                    {
+                        // No
+                        $strErrorMessage .= "-Width must be numeric!!!" . '\n';			
+                        $blnIsValidData = false;   
+                    }      
+                }
+                if ( empty($intDepth) == false )
+                {
+                    if ( is_numeric($intDepth) == false )
+                    {
+                        $strErrorMessage .= "-Depth must be numeric!!!" . '\n';			
+                        $blnIsValidData = false;   
+                    }      
+                } 
+                if ( empty($intSquareFeet) == false )
+                {
+                    if ( is_numeric($intSquareFeet) == false )
+                    {
+                        $strErrorMessage .= "-Price per foot must be numeric!!!" . '\n';			
+                        $blnIsValidData = false;   
+                    }      
+                }                
+
+                // Send an error message to the user.
+                if ($blnIsValidData == false)
+                {
+                    //SendMessageToClient( $strErrorValues );
+                    SendMessageToClient($strErrorMessage);
+                }               
+
+                return $blnIsValidData;
+            }            
             
         ?>
 
@@ -375,7 +437,7 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 <div class="BlackBar" > Homework 6 Step 2 - Server Side Controls - Hard </div>
 <br />
 
-<form name="frmDesktopCalculator" id="frmDesktopCalculator" runat="server" action="Homework6Step2.php" method="get" >
+<form name="frmDesktopCalculator" id="frmDesktopCalculator" runat="server" action="Homework6Step2.php" method="post" >
 
     <fieldset>
 
@@ -539,7 +601,7 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
                
             <!-- Calculate Total -->
             <input type="submit" name="btnCalculateTotal" id="btnCalculateTotal" runat="server" MaxLength="5"
-            value="Calculate Total" OnClick="return IsValidData( );"/> 
+            value="Calculate Total" xOnClick="return IsValidData( );"/> 
 
             <!-- Blank -->
             <span class="Spacer"> &nbsp; </span>
