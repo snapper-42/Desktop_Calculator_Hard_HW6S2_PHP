@@ -293,36 +293,36 @@
                 // Width
                 if (isNaN(frmDesktopCalculator.txtWidth.value) === true)
                 {
-                    strErrorMessage += "Width must be numberic\n";
+                    strErrorMessage += "-Width must be numberic\n";
                     blnIsValidData = false;
                 }
                 else if (frmDesktopCalculator.txtWidth.value === "")
                 {
-                    strErrorMessage += "Width can't be blank\n";
+                    strErrorMessage += "-Width can't be blank\n";
                     blnIsValidData = false;
                 }
 
                 // Depth
                 if (isNaN(frmDesktopCalculator.txtDepth.value) === true)
                 {
-                    strErrorMessage += "Depth must be numberic\n";
+                    strErrorMessage += "-Depth must be numberic\n";
                     blnIsValidData = false;
                 }
                 else if (frmDesktopCalculator.txtDepth.value === "")
                 {
-                    strErrorMessage += "Depth can't be blank\n";
+                    strErrorMessage += "-Depth can't be blank\n";
                     blnIsValidData = false;
                 }
 
                 // Price Per Foot
                 if (isNaN(frmDesktopCalculator.txtPricePerFoot.value) === true)
                 {
-                    strErrorMessage += "Price Per Foot must be numberic\n";
+                    strErrorMessage += "-Price Per Foot must be numberic\n";
                     blnIsValidData = false;
                 }
                 else if (frmDesktopCalculator.txtPricePerFoot.value === "")
                 {
-                    strErrorMessage += "Price Per Foot can't be blank\n";
+                    strErrorMessage += "-Price Per Foot can't be blank\n";
                     blnIsValidData = false;
                 }
 
@@ -356,7 +356,7 @@
                 // Drawers
                 frmDesktopCalculator.radDrawers1.checked = true;
                 frmDesktopCalculator.radVeneer.checked = true;
-                frmDesktopCalculator.ddlCustomDrawerCount.value = 1;
+                frmDesktopCalculator.cmbCustomDrawerCount.selectedIndex = 4;
 
                
             }
@@ -375,7 +375,7 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 <div class="BlackBar" > Homework 6 Step 2 - Server Side Controls - Hard </div>
 <br />
 
-<form name="frmDesktopCalculator" id="frmDesktopCalculator" runat="server" action="Homework6Step2.aspx" method="get" >
+<form name="frmDesktopCalculator" id="frmDesktopCalculator" runat="server" action="Homework6Step2.php" method="get" >
 
     <fieldset>
 
@@ -454,22 +454,19 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
                 <!-- 1 Drawer -->
             <label class="" for="radDrawers1">
-                <input type="radio" name="radDrawers1" id="radDrawers1" runat="server"
-                GroupName="grpDrawers" Checked="true"/>
-                One (1) $35
+                <input type="radio" name="radDrawers" id="radDrawers1" GroupName="grpDrawers" Checked="true"/>
+                One (1) $3
             </label>           
 
                 <!-- 2 Drawer -->
             <label class="" for="radDrawers2">
-                <input type="radio" name="radDrawers2" id="radDrawers2" runat="server"
-                GroupName="grpDrawers" />
+                <input type="radio" name="radDrawers" id="radDrawers2" >
                 Two (2) $60
             </label> 
                 
                 <!-- Custom Drawer -->
             <label class="" for="radDrawersCustom">
-                <input type="radio" name="radDrawersCustom" id="radDrawersCustom" runat="server"
-                GroupName="grpDrawers" />
+                <input type="radio" name="radDrawers" id="radDrawersCustom" >
                 Custom
             </label> 
                           
@@ -507,15 +504,13 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
                 <!-- Veneer -->
             <label class="" for="radVeneer">
-                <input type="radio" name="radVeneer" id="radVeneer" runat="server"
-                GroupName="grpWood" Checked="true"/>
+                <input type="radio" name="radWood" id="radVeneer" value="Veneer" Checked="true" >
                 Veneer
             </label>           
 
                 <!-- Oak -->
             <label class="" for="radOak">
-                <input type="radio" name="radOak" id="radOak" runat="server"
-                GroupName="grpWood" />
+                <input type="radio" name="radWood" id="radOak" value="Oak" >
                 Oak (+$50)
             </label> 
 
@@ -523,15 +518,13 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
                 
                 <!-- Maple -->
             <label class="" for="radMaple">
-                <input type="radio" name="radMaple" id="radMaple" runat="server"
-                GroupName="grpWood" />
+                <input type="radio" name="radWood" id="radMaple" value="Maple" >
                 Maple (+$75)
             </label> 
 
             <!-- Cherry -->
             <label class="" for="radCherry">
-                <input type="radio" name="radCherry" id="radCherry" runat="server"
-                GroupName="grpWood" />
+                <input type="radio" name="radWood" id="radCherry" >
                 Cherry (+$75)
             </label>                       
 
@@ -546,14 +539,13 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
                
             <!-- Calculate Total -->
             <input type="submit" name="btnCalculateTotal" id="btnCalculateTotal" runat="server" MaxLength="5"
-            value="Calculate Total" OnCLientClick="return IsValidData( );"/> 
+            value="Calculate Total" OnClick="return IsValidData( );"/> 
 
             <!-- Blank -->
             <span class="Spacer"> &nbsp; </span>
 
             <!-- Clear -->
-            <input type="button" name="btnClear" id="btnClear" runat="server" 
-            value="Clear" OnCLientClick="btnClear_Click( ); "/> 
+            <input type="submit" name="btnClear" id="btnClear" value="Clear" OnClick="btnClear_Click( ); "/> 
 
         </fieldset>
 
