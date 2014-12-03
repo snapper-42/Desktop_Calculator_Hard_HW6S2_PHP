@@ -130,6 +130,7 @@
             }
 
             #grbButtons input[type=submit]
+                       ,input[type=button]
             {
                 width: 150px;
                 height: 30px;
@@ -391,8 +392,8 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
             <!-- Width -->
             <label class="" for="txtWidth"> Width (inches): <br />
-                <asp:TextBox name="txtWidth" id="txtWidth" runat="server"
-                maxlength="3" AutoPostBack="true"></asp:TextBox> <br />
+                <input type="text" name="txtWidth" id="txtWidth" runat="server"
+                maxlength="3" AutoPostBack="true" /> <br />
             </label>
 
             <!-- * -->
@@ -400,8 +401,8 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
             <!-- Depth -->
             <label class="" for="txtDepth"> Depth (inches): <br />
-                <asp:TextBox name="txtDepth" id="txtDepth" runat="server"
-                maxlength="3" size="10" AutoPostBack="true"></asp:TextBox> <br />
+                <input type="text" name="txtDepth" id="txtDepth" runat="server"
+                maxlength="3" size="10" AutoPostBack="true"/> <br />
             </label>
 
             <!-- Blank -->
@@ -416,8 +417,8 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
             <!-- SquareFeet -->
             <label class="" for="txtSquareFeet"> Square Feet: <br />
-                <asp:TextBox name="txtSquareFeet" id="txtSquareFeet" runat="server"
-                maxlength="3" AutoPostBack="true" ReadOnly="true"></asp:TextBox> <br />
+                <input type="text" name="txtSquareFeet" id="txtSquareFeet" runat="server"
+                maxlength="3" AutoPostBack="true" ReadOnly="true"/> <br />
             </label>
 
             <!-- * -->
@@ -425,8 +426,8 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
             <!-- Price Per Foot -->
             <label class="" for="txtPricePerFoot"> Price / Foot: <br />
-                <asp:TextBox name="txtPricePerFoot" id="txtPricePerFoot" runat="server"
-                maxlength="3" AutoPostBack="true"></asp:TextBox> <br />
+                <input type="text" name="txtPricePerFoot" id="txtPricePerFoot" runat="server"
+                maxlength="3" AutoPostBack="true"/> <br />
             </label>
 
             <!-- = -->
@@ -434,8 +435,8 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
             <!-- Size Total -->
             <label class="" for="txtSizeTotal"> Size Total: <br />
-                <asp:TextBox name="txtSizeTotal" id="txtSizeTotal" runat="server"
-                maxlength="3" AutoPostBack="true" ReadOnly="true" ></asp:TextBox> <br />
+                <input type="text" name="txtSizeTotal" id="txtSizeTotal" runat="server"
+                maxlength="3" AutoPostBack="true" ReadOnly="true" /> <br />
             </label>
 
         </fieldset>
@@ -453,21 +454,21 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
                 <!-- 1 Drawer -->
             <label class="" for="radDrawers1">
-                <asp:RadioButton name="radDrawers1" id="radDrawers1" runat="server"
+                <input type="radio" name="radDrawers1" id="radDrawers1" runat="server"
                 GroupName="grpDrawers" Checked="true"/>
                 One (1) $35
             </label>           
 
                 <!-- 2 Drawer -->
             <label class="" for="radDrawers2">
-                <asp:RadioButton name="radDrawers2" id="radDrawers2" runat="server"
+                <input type="radio" name="radDrawers2" id="radDrawers2" runat="server"
                 GroupName="grpDrawers" />
                 Two (2) $60
             </label> 
                 
                 <!-- Custom Drawer -->
             <label class="" for="radDrawersCustom">
-                <asp:RadioButton name="radDrawersCustom" id="radDrawersCustom" runat="server"
+                <input type="radio" name="radDrawersCustom" id="radDrawersCustom" runat="server"
                 GroupName="grpDrawers" />
                 Custom
             </label> 
@@ -485,15 +486,11 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
             <!-- Custom Drawer Count -->
             <label class="">
 
-                <asp:DropDownList name="ddlCustomDrawerCount"
-                id="ddlCustomDrawerCount" runat="server">
-
-                    <asp:ListItem Value="3" Text="3" />
-                    <asp:ListItem Value="4" Text="4" />
-                    <asp:ListItem Value="5" Text="5" />
-
-
-                </asp:DropDownList>
+                <select name="cmbCustomDrawerCount" id="ddlCustomDrawerCount">
+                    <option value="3"> 3 </option>
+                    <option value="4"> 4 </option>
+                    <option value="5"> 5 </option>        
+                </select> <br />
 
             </label>
 
@@ -510,14 +507,14 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
 
                 <!-- Veneer -->
             <label class="" for="radVeneer">
-                <asp:RadioButton name="radVeneer" id="radVeneer" runat="server"
+                <input type="radio" name="radVeneer" id="radVeneer" runat="server"
                 GroupName="grpWood" Checked="true"/>
                 Veneer
             </label>           
 
                 <!-- Oak -->
             <label class="" for="radOak">
-                <asp:RadioButton name="radOak" id="radOak" runat="server"
+                <input type="radio" name="radOak" id="radOak" runat="server"
                 GroupName="grpWood" />
                 Oak (+$50)
             </label> 
@@ -526,14 +523,14 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
                 
                 <!-- Maple -->
             <label class="" for="radMaple">
-                <asp:RadioButton name="radMaple" id="radMaple" runat="server"
+                <input type="radio" name="radMaple" id="radMaple" runat="server"
                 GroupName="grpWood" />
                 Maple (+$75)
             </label> 
 
             <!-- Cherry -->
             <label class="" for="radCherry">
-                <asp:RadioButton name="radCherry" id="radCherry" runat="server"
+                <input type="radio" name="radCherry" id="radCherry" runat="server"
                 GroupName="grpWood" />
                 Cherry (+$75)
             </label>                       
@@ -548,15 +545,15 @@ Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
         <fieldset id="grbButtons">
                
             <!-- Calculate Total -->
-            <asp:Button name="btnCalculateTotal" id="btnCalculateTotal" runat="server" MaxLength="5"
-            Text="Calculate Total" OnCLientClick="return IsValidData( );"/> 
+            <input type="submit" name="btnCalculateTotal" id="btnCalculateTotal" runat="server" MaxLength="5"
+            value="Calculate Total" OnCLientClick="return IsValidData( );"/> 
 
             <!-- Blank -->
             <span class="Spacer"> &nbsp; </span>
 
             <!-- Clear -->
-            <asp:Button name="btnClear" id="btnClear" runat="server" 
-            Text="Clear" OnCLientClick="btnClear_Click( ); "/> 
+            <input type="button" name="btnClear" id="btnClear" runat="server" 
+            value="Clear" OnCLientClick="btnClear_Click( ); "/> 
 
         </fieldset>
 
