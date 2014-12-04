@@ -258,13 +258,21 @@
         
         <?php
             include 'modUtilities.php';
-            
+            $intWidth = GetFormValue( "txtWidth", "" );
+            $intDepth = GetFormValue( "txtDepth", "" );
+            $intSquareFeet = GetFormValue("txtPricePerFoot", "" );
             $intTotal = "";
+            $decSquareFeet = CalculateSquareFeet();
+            $decSizePrice = CalculateSizePrice($decSquareFeet);
             
-            // Non-procedurized piece of code at the top.
-            if (IsValidData( ) == true )
+            
+            // Ensure the values are not empty prior to submit
+            if ( $intWidth != "" && $intDepth != "" && $intSquareFeet != "" )
             {
-                //$inTotal = DoCalculations( );
+                if (IsValidData( ) == true )
+                {
+                    $inTotal = CalculatePrice( $decSquareFeet );
+                }
             }
             
             // --------------------------------------------------------------------------------
@@ -276,7 +284,6 @@
                 $intWidth = GetFormValue( "txtWidth", "" );
                 $intDepth = GetFormValue( "txtDepth", "" );
                 $intSquareFeet = GetFormValue("txtPricePerFoot", "" );
-                echo "'$intWidth' " . "'$intDepth' " . "'$intSquareFeet'";
                 
                 // echo "Value 1 = '" . $intValue1 . "'<br />\n";
                 
@@ -320,6 +327,140 @@
                 }               
 
                 return $blnIsValidData;
+            }  
+            
+            
+            
+            // --------------------------------------------------------------------------------
+            // Name: CalculateSquareFeet
+            // Abstract:  Update the square feet when width or depth is changed
+            // --------------------------------------------------------------------------------
+            function CalculateSquareFeet()
+            {
+                // Get the values from the form
+                $decWidth = GetFormValue("txtWidth", "");
+                $decDepth = GetFormValue("txtDepth", "");
+                $decSquareFeet = 0;
+                
+                // Divide the form values by 12
+                $decWidth /= 12;
+                $decDepth /= 12;
+                
+                // Find the number of square feet
+                $decSquareFeet = $decWidth * $decDepth;
+                
+                return $decSquareFeet;
+            }
+
+
+
+            // --------------------------------------------------------------------------------
+            // Name: CalculatePrice
+            // Abstract:  Calculate the price
+            // --------------------------------------------------------------------------------
+            function CalculatePrice( $decSquareFeet )
+            {   
+                $decTotalDeskPrice = "";
+                $strMessage = "";
+                
+                // Get the individual prices of the size, drawer and wood
+                $decSizePrice = CalculateSizePrice( $decSquareFeet );
+                $decDrawerPrice = CalculateDrawerPrice();
+                $decWoodPrice = CalculateWoodPrice();
+                
+                // Combine the prices to get the total cost
+                $decTotalDeskPrice = $decSizePrice + $decDrawerPrice + $decWoodPrice;
+                
+                $strMessage = "The total desk price is " . '$' . number_format( $decTotalDeskPrice, 2, '.', ',');
+                SendMessageToClient($strMessage);
+            } 
+            
+            
+            
+            // --------------------------------------------------------------------------------
+            // Name: CalculateSizePrice
+            // Abstract:  Update the size price when the square feet or price per foot change
+            // --------------------------------------------------------------------------------
+            function CalculateSizePrice($decSquareFeet)
+            {      
+                $decPricePerFoot  = 0;
+                $decSizePrice = 0;
+                
+                // Get the value off of the form
+                $decPricePerFoot = GetFormValue("txtPricePerFoot", "");
+                                              
+                // Do calculation
+                $decSizePrice = $decSquareFeet * $decPricePerFoot;
+                
+
+                return $decSizePrice;
+                
+            }  
+            
+            
+            
+             // --------------------------------------------------------------------------------
+             // Name: CalculateDrawerPrice
+             // Abstract:  Calculate the drawer price
+             // --------------------------------------------------------------------------------
+             function CalculateDrawerPrice()
+             {
+                 $decDrawerPrice = 0;
+                 $radDrawers = $_POST['radDrawers']; 
+                 $intDrawerCustom = GetFormValue("cmbCustomDrawerCount", "");            
+           
+                 // 1 drawer = $35
+                 if ( $radDrawers == 'radDrawer1')
+                 {
+                     $decDrawerPrice = 35;
+                 }
+              
+                 // 2 drawers = $60
+                 elseif ($radDrawers == 'radDrawer2')
+                 {
+                     $decDrawerPrice = 60;
+                 }
+                
+                 // Custom drawers = $100 + $25
+                 elseif ($radDrawers == 'radDrawerCustom')
+                 {
+                     $decDrawerPrice = 100 + 25 * $intDrawerCustom;
+                 }  
+
+                 return $decDrawerPrice;
+                                          
+             }  
+            
+            
+            
+            // --------------------------------------------------------------------------------
+            // Name: CalculateWoodPrice
+            // Abstract:  Calculate the drawer price
+            // --------------------------------------------------------------------------------
+            function CalculateWoodPrice()
+            {
+                $decWoodPrice = 0;
+                $radWood = $_POST[ 'radWood' ];
+echo $radWood;
+                // Oak = $50
+                if ( $radWood == "radOak")
+                {
+                    $decWoodPrice = 50;
+                }
+                 
+                // Maple = $75
+                elseif ($radWood == "radMaple") 
+                {
+                    $decWoodPrice = 75;
+                }
+
+                // Cherry = $75
+                elseif ($radWood == "radCherry") 
+                {
+                    $decWoodPrice = 75;
+                }
+                
+                return $decWoodPrice;
             }            
             
         ?>
@@ -333,11 +474,12 @@
             function btnCalculateTotal_Click()
             {
                 var frmDesktopCalculator = document.getElementById("frmDesktopCalculator");
-
+                
                 if (IsValidData() === true)
                 {
                     frmDesktopCalculator.submit();
                 }
+
             }
 
 
@@ -409,207 +551,224 @@
                 var frmDesktopCalculator = document.getElementById("frmDesktopCalculator");
 
                 // Size
-                frmDesktopCalculator.txtWidth.value = "";
-                frmDesktopCalculator.txtDepth.value = "";
-                frmDesktopCalculator.txtSquareFeet.value = "";
-                frmDesktopCalculator.txtPricePerFoot.value = "";
-                frmDesktopCalculator.txtSizeTotal.value = "";
-
-                // Drawers
-                frmDesktopCalculator.radDrawers1.checked = true;
-                frmDesktopCalculator.radVeneer.checked = true;
-                frmDesktopCalculator.cmbCustomDrawerCount.selectedIndex = 4;
+//                frmDesktopCalculator.txtWidth.value = "";
+//                frmDesktopCalculator.txtDepth.value = "";
+//                frmDesktopCalculator.txtSquareFeet.value = "";
+//                frmDesktopCalculator.txtPricePerFoot.value = "";
+//                frmDesktopCalculator.txtSizeTotal.value = "";
+//
+//                // Drawers
+//                frmDesktopCalculator.radDrawers1.checked = true;
+//                frmDesktopCalculator.radVeneer.checked = true;
+                frmDesktopCalculator.value = 3;
 
                
             }
+            
+            
+            
+            // --------------------------------------------------------------------------------
+            // Name: Body_OnLoad
+            // Abstract:  Body OnLoad
+            // --------------------------------------------------------------------------------
+            function Body_OnLoad()
+            {
+                var frmSimpleCalculator = document.getElementById("frmDesktopCalculator");
+
+                frmSimpleCalculator.txtWidth.value = "<?php echo GetFormValue( "txtWidth", "" ) ?>";
+                frmSimpleCalculator.txtDepth.value = "<?php echo GetFormValue( "txtDepth", "" ) ?>";
+                frmSimpleCalculator.txtPricePerFoot.value = "<?php echo GetFormValue( "txtPricePerFoot", "" ) ?>";
+                frmSimpleCalculator.txtSizeTotal.value = "<?php echo "$" . number_format($decSizePrice, 2) ?>";
+                frmSimpleCalculator.txtSquareFeet.value = "<?php echo $decSquareFeet ?>";
+                frmSimpleCalculator.cmbCustomDrawerCount.value = <?php echo GetFormValue("cmbCustomDrawerCount","")?>
+            }            
 
         </script>
 
     </head>
-
-<body>
-
-Name: Brandon Roberts <br />
-Class: IT-103 VB.Net #3 <br />
-Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
-<br />
-
-<div class="BlackBar" > Homework 6 Step 2 - Server Side Controls - Hard </div>
-<br />
-
-<form name="frmDesktopCalculator" id="frmDesktopCalculator" runat="server" action="Homework6Step2.php" method="post" >
-
-    <fieldset>
-
-        <legend> Desk Calculator </legend>
-
-        <!-- --------------------------------------- -->
-        <!-- Square Footage -->
-        <!-- --------------------------------------- -->
-        <fieldset id="grbSquareFootage">
-
-            <legend > Square Footage </legend>
-
-            <!-- Row 1: Width * Depth -->
-
-            <!-- Width -->
-            <label class="" for="txtWidth"> Width (inches): <br />
-                <input type="text" name="txtWidth" id="txtWidth" runat="server"
-                maxlength="3" AutoPostBack="true" /> <br />
-            </label>
-
-            <!-- * -->
-            <span class="Spacer"> * </span>
-
-            <!-- Depth -->
-            <label class="" for="txtDepth"> Depth (inches): <br />
-                <input type="text" name="txtDepth" id="txtDepth" runat="server"
-                maxlength="3" size="10" AutoPostBack="true"/> <br />
-            </label>
-
-            <!-- Blank -->
-            <span class="Spacer"> &nbsp; </span>
-                
-            <!-- Filler -->
-            <label class=""> &nbsp; </label>
-
-            <br />
-
-            <!-- Row 2: Square Feet * Price Per Foot = Size Price -->
-
-            <!-- SquareFeet -->
-            <label class="" for="txtSquareFeet"> Square Feet: <br />
-                <input type="text" name="txtSquareFeet" id="txtSquareFeet" runat="server"
-                maxlength="3" AutoPostBack="true" ReadOnly="true"/> <br />
-            </label>
-
-            <!-- * -->
-            <span class="Spacer"> * </span>
-
-            <!-- Price Per Foot -->
-            <label class="" for="txtPricePerFoot"> Price / Foot: <br />
-                <input type="text" name="txtPricePerFoot" id="txtPricePerFoot" runat="server"
-                maxlength="3" AutoPostBack="true"/> <br />
-            </label>
-
-            <!-- = -->
-            <span class="Spacer"> = </span>
-
-            <!-- Size Total -->
-            <label class="" for="txtSizeTotal"> Size Total: <br />
-                <input type="text" name="txtSizeTotal" id="txtSizeTotal" runat="server"
-                maxlength="3" AutoPostBack="true" ReadOnly="true" /> <br />
-            </label>
-
-        </fieldset>
-
-
-        <!-- --------------------------------------- -->
-        <!-- Drawers -->
-        <!-- --------------------------------------- -->
-
-        <fieldset id="grbDrawers">
-
-            <legend > Drawers </legend>
-
-            <!-- Row 1: Drawer, 2 Drawers, x Custom -->
-
-                <!-- 1 Drawer -->
-            <label class="" for="radDrawers1">
-                <input type="radio" name="radDrawers" id="radDrawers1" GroupName="grpDrawers" Checked="true"/>
-                One (1) $3
-            </label>           
-
-                <!-- 2 Drawer -->
-            <label class="" for="radDrawers2">
-                <input type="radio" name="radDrawers" id="radDrawers2" >
-                Two (2) $60
-            </label> 
-                
-                <!-- Custom Drawer -->
-            <label class="" for="radDrawersCustom">
-                <input type="radio" name="radDrawers" id="radDrawersCustom" >
-                Custom
-            </label> 
-                          
-            <br />
-
-            <!-- Row 2: Filler, Filler, Custom Drawer Count -->
-
-            <!-- Filler -->
-            <label class=""> &nbsp; </label>
-
-            <!-- Filler -->
-            <label class=""> &nbsp; </label>
-
-            <!-- Custom Drawer Count -->
-            <label class="">
-
-                <select name="cmbCustomDrawerCount" id="ddlCustomDrawerCount">
-                    <option value="3"> 3 </option>
-                    <option value="4"> 4 </option>
-                    <option value="5"> 5 </option>        
-                </select> <br />
-
-            </label>
-
-        </fieldset>
-
-
-        <!-- --------------------------------------- -->
-        <!-- Wood -->
-        <!-- --------------------------------------- -->
-
-        <fieldset id="grbWood">
-
-            <legend > Wood </legend>
-
-                <!-- Veneer -->
-            <label class="" for="radVeneer">
-                <input type="radio" name="radWood" id="radVeneer" value="Veneer" Checked="true" >
-                Veneer
-            </label>           
-
-                <!-- Oak -->
-            <label class="" for="radOak">
-                <input type="radio" name="radWood" id="radOak" value="Oak" >
-                Oak (+$50)
-            </label> 
-
-            <br />
-                
-                <!-- Maple -->
-            <label class="" for="radMaple">
-                <input type="radio" name="radWood" id="radMaple" value="Maple" >
-                Maple (+$75)
-            </label> 
-
-            <!-- Cherry -->
-            <label class="" for="radCherry">
-                <input type="radio" name="radWood" id="radCherry" >
-                Cherry (+$75)
-            </label>                       
-
-        </fieldset>
-
-
-        <!-- --------------------------------------- -->
-        <!-- Buttons -->
-        <!-- --------------------------------------- -->
-
-        <fieldset id="grbButtons">
-               
-            <!-- Calculate Total -->
-            <input type="submit" name="btnCalculateTotal" id="btnCalculateTotal" runat="server" MaxLength="5"
-            value="Calculate Total" xOnClick="return IsValidData( );"/> 
-
-            <!-- Blank -->
-            <span class="Spacer"> &nbsp; </span>
-
-            <!-- Clear -->
-            <input type="submit" name="btnClear" id="btnClear" value="Clear" OnClick="btnClear_Click( ); "/> 
-
-        </fieldset>
+    
+<body onload="Body_OnLoad();">
+	
+	Name: Brandon Roberts <br />
+	Class: IT-103 VB.Net #3 <br />
+	Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
+	<br />
+	
+	<div class="BlackBar" > Homework 6 Step 2 - Server Side Controls - Hard </div>
+	<br />
+	
+	<form name="frmDesktopCalculator" id="frmDesktopCalculator" runat="server" action="Homework6Step2.php" method="post" >
+	
+	    <fieldset>
+	
+	        <legend> Desk Calculator </legend>
+	
+	        <!-- --------------------------------------- -->
+	        <!-- Square Footage -->
+	        <!-- --------------------------------------- -->
+	        <fieldset id="grbSquareFootage">
+	
+	            <legend > Square Footage </legend>
+	
+	            <!-- Row 1: Width * Depth -->
+	
+	            <!-- Width -->
+	            <label class="" for="txtWidth"> Width (inches): <br />
+	                <input type="text" name="txtWidth" id="txtWidth"  value="" maxlength="3"  /> <br />
+	            </label>
+	
+	            <!-- * -->
+	            <span class="Spacer"> * </span>
+	
+	            <!-- Depth -->
+	            <label class="" for="txtDepth"> Depth (inches): <br />
+	                <input type="text" name="txtDepth" id="txtDepth" runat="server"
+	                maxlength="3" size="10" AutoPostBack="true"/> <br />
+	            </label>
+	
+	            <!-- Blank -->
+	            <span class="Spacer"> &nbsp; </span>
+	                
+	            <!-- Filler -->
+	            <label class=""> &nbsp; </label>
+	
+	            <br />
+	
+	            <!-- Row 2: Square Feet * Price Per Foot = Size Price -->
+	
+	            <!-- SquareFeet -->
+	            <label class="" for="txtSquareFeet"> Square Feet: <br />
+	                <input type="text" name="txtSquareFeet" id="txtSquareFeet" runat="server"
+	                maxlength="3" AutoPostBack="true" ReadOnly="true"/> <br />
+	            </label>
+	
+	            <!-- * -->
+	            <span class="Spacer"> * </span>
+	
+	            <!-- Price Per Foot -->
+	            <label class="" for="txtPricePerFoot"> Price / Foot: <br />
+	                <input type="text" name="txtPricePerFoot" id="txtPricePerFoot" runat="server"
+	                maxlength="3" AutoPostBack="true"/> <br />
+	            </label>
+	
+	            <!-- = -->
+	            <span class="Spacer"> = </span>
+	
+	            <!-- Size Total -->
+	            <label class="" for="txtSizeTotal"> Size Total: <br />
+	                <input type="text" name="txtSizeTotal" id="txtSizeTotal" runat="server"
+	                maxlength="3" AutoPostBack="true" ReadOnly="true" /> <br />
+	            </label>
+	
+	        </fieldset>
+	
+	
+	        <!-- --------------------------------------- -->
+	        <!-- Drawers -->
+	        <!-- --------------------------------------- -->
+	
+	        <fieldset id="grbDrawers">
+	
+	            <legend > Drawers </legend>
+	
+	            <!-- Row 1: Drawer, 2 Drawers, x Custom -->
+	
+	                <!-- 1 Drawer -->
+	            <label class="" for="radDrawers1">
+	                <input type="radio" name="radDrawers" id="radDrawer1" value='radDrawer1' Checked="true" >
+	                One (1) $30
+	            </label>           
+	
+	                <!-- 2 Drawer -->
+	            <label class="" for="radDrawers2">
+	                <input type="radio" name="radDrawers" id="radDrawer2" value="radDrawer2">
+	                Two (2) $60
+	            </label> 
+	                
+	                <!-- Custom Drawer -->
+	            <label class="" for="radDrawersCustom">
+	                <input type="radio" name="radDrawers" id="radDrawerCustom" value="radDrawerCustom">
+	                Custom
+	            </label> 
+	                          
+	            <br />
+	
+	            <!-- Row 2: Filler, Filler, Custom Drawer Count -->
+	
+	            <!-- Filler -->
+	            <label class=""> &nbsp; </label>
+	
+	            <!-- Filler -->
+	            <label class=""> &nbsp; </label>
+	
+	            <!-- Custom Drawer Count -->
+	            <label class="">
+	
+	                <select name="cmbCustomDrawerCount" id="cmbCustomDrawerCount" >
+	                    <option value="3"> 3 </option>
+	                    <option value="4"> 4 </option>
+	                    <option value="5"> 5 </option>        
+	                </select> <br />
+	
+	            </label>
+	
+	        </fieldset>
+	
+	
+	        <!-- --------------------------------------- -->
+	        <!-- Wood -->
+	        <!-- --------------------------------------- -->
+	
+	        <fieldset id="grbWood">
+	
+	            <legend > Wood </legend>
+	
+	                <!-- Veneer -->
+	            <label class="" for="radVeneer">
+	                <input type="radio" name="radWood" id="radVeneer" value="radVeneer" Checked="true" >
+	                Veneer
+	            </label>           
+	
+	                <!-- Oak -->
+	            <label class="" for="radOak">
+	                <input type="radio" name="radWood" id="radOak" value="radOak" >
+	                Oak (+$50)
+	            </label> 
+	
+	            <br />
+	                
+	                <!-- Maple -->
+	            <label class="" for="radMaple">
+	                <input type="radio" name="radWood" id="radMaple" value="radMaple" >
+	                Maple (+$75)
+	            </label> 
+	
+	            <!-- Cherry -->
+	            <label class="" for="radCherry">
+	                <input type="radio" name="radWood" id="radCherry" value="radCherry ">
+	                Cherry (+$75)
+	            </label>                       
+	
+	        </fieldset>
+	
+	
+	        <!-- --------------------------------------- -->
+	        <!-- Buttons -->
+	        <!-- --------------------------------------- -->
+	
+	        <fieldset id="grbButtons">
+	               
+	            <!-- Calculate Total -->
+	            <input type="submit" name="btnCalculateTotal" id="btnCalculateTotal" MaxLength="5"
+	            value="Calculate Total" xOnClick="return IsValidData( );"/> 
+	
+	            <!-- Blank -->
+	            <span class="Spacer"> &nbsp; </span>
+	
+	            <!-- Clear -->
+	            <input type="submit" name="btnClear" id="btnClear" value="Clear" OnClick="btnClear_Click( ); "/> 
+	
+	        </fieldset>
 
         </form>
 
