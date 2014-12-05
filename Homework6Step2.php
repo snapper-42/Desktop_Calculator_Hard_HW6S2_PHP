@@ -4,7 +4,7 @@
 
     <head>
 
-        <title> Homework - Step 2: Server Side Controls - Hard </title>
+        <title> Homework 6 - Step 2: Server Side Controls - Hard </title>
 
         <!-- Embedded Styles: only have to define once -->
         <style type="text/css">
@@ -257,23 +257,31 @@
         </style>
         
         <?php
+			
+			// Form Variables
             include 'modUtilities.php';
             $intWidth = GetFormValue( "txtWidth", "" );
             $intDepth = GetFormValue( "txtDepth", "" );
             $intSquareFeet = GetFormValue("txtPricePerFoot", "" );
-            $intTotal = "";
             $decSquareFeet = CalculateSquareFeet();
-            $decSizePrice = CalculateSizePrice($decSquareFeet);
-            
+            $decSizePrice = CalculateSizePrice($decSquareFeet);            
+            $radDrawerID = GetFormValue( "radDrawers", "" );
+            $radWoodID = GetFormValue("radWood", "" );
+            $intTotal = "";
+                        
             
             // Ensure the values are not empty prior to submit
             if ( $intWidth != "" && $intDepth != "" && $intSquareFeet != "" )
             {
+				// Are the form variables valid?
                 if (IsValidData( ) == true )
                 {
+					// Yes? Calculate the price
                     $inTotal = CalculatePrice( $decSquareFeet );
                 }
             }
+            
+            
             
             // --------------------------------------------------------------------------------
             // Name: Validation
@@ -284,14 +292,12 @@
                 $intWidth = GetFormValue( "txtWidth", "" );
                 $intDepth = GetFormValue( "txtDepth", "" );
                 $intSquareFeet = GetFormValue("txtPricePerFoot", "" );
-                
-                // echo "Value 1 = '" . $intValue1 . "'<br />\n";
-                
+                                
                 // Get the value of the textbox's and combobox
                 $blnIsValidData = true;
                 $strErrorMessage = "Server says, Please correct the following error(s): " . '\n';
                 
-                // txtValue1
+                // txtWidth
                 if ( empty($intWidth) == false )
                 {
                     // Numeric?
@@ -302,14 +308,18 @@
                         $blnIsValidData = false;   
                     }      
                 }
+                // txtDepth
                 if ( empty($intDepth) == false )
                 {
+					// Numeric?
                     if ( is_numeric($intDepth) == false )
                     {
+						// No
                         $strErrorMessage .= "-Depth must be numeric!!!" . '\n';			
                         $blnIsValidData = false;   
                     }      
                 } 
+                // txtSquareFeet
                 if ( empty($intSquareFeet) == false )
                 {
                     if ( is_numeric($intSquareFeet) == false )
@@ -433,35 +443,35 @@
             
             
             
-            // --------------------------------------------------------------------------------
-            // Name: CalculateWoodPrice
-            // Abstract:  Calculate the drawer price
-            // --------------------------------------------------------------------------------
-            function CalculateWoodPrice()
-            {
-                $decWoodPrice = 0;
-                $radWood = $_POST[ 'radWood' ];
-echo $radWood;
-                // Oak = $50
-                if ( $radWood == "radOak")
-                {
-                    $decWoodPrice = 50;
-                }
+             // --------------------------------------------------------------------------------
+             // Name: CalculateWoodPrice
+             // Abstract:  Calculate the drawer price
+             // --------------------------------------------------------------------------------
+             function CalculateWoodPrice()
+             {
+                 $decWoodPrice = 0;
+                 $radWood = $_POST[ 'radWood' ];
+  
+                 // Oak = $50
+                 if ( $radWood == "radOak")
+                 {
+                     $decWoodPrice = 50;
+                 }
+                  
+                 // Maple = $75
+                 elseif ($radWood == "radMaple") 
+                 {
+                     $decWoodPrice = 75;
+                 }
+  
+                 // Cherry = $75
+                 elseif ($radWood == "radCherry") 
+                 {
+                     $decWoodPrice = 75;
+                 }
                  
-                // Maple = $75
-                elseif ($radWood == "radMaple") 
-                {
-                    $decWoodPrice = 75;
-                }
-
-                // Cherry = $75
-                elseif ($radWood == "radCherry") 
-                {
-                    $decWoodPrice = 75;
-                }
-                
-                return $decWoodPrice;
-            }            
+                 return $decWoodPrice;
+             }            
             
         ?>
 
@@ -474,7 +484,7 @@ echo $radWood;
             function btnCalculateTotal_Click()
             {
                 var frmDesktopCalculator = document.getElementById("frmDesktopCalculator");
-                
+            
                 if (IsValidData() === true)
                 {
                     frmDesktopCalculator.submit();
@@ -551,18 +561,16 @@ echo $radWood;
                 var frmDesktopCalculator = document.getElementById("frmDesktopCalculator");
 
                 // Size
-//                frmDesktopCalculator.txtWidth.value = "";
-//                frmDesktopCalculator.txtDepth.value = "";
-//                frmDesktopCalculator.txtSquareFeet.value = "";
-//                frmDesktopCalculator.txtPricePerFoot.value = "";
-//                frmDesktopCalculator.txtSizeTotal.value = "";
-//
-//                // Drawers
-//                frmDesktopCalculator.radDrawers1.checked = true;
-//                frmDesktopCalculator.radVeneer.checked = true;
-                frmDesktopCalculator.value = 3;
+                frmDesktopCalculator.txtWidth.value = "";
+                frmDesktopCalculator.txtDepth.value = "";
+                frmDesktopCalculator.txtSquareFeet.value = "";
+                frmDesktopCalculator.txtPricePerFoot.value = "";
+                frmDesktopCalculator.txtSizeTotal.value = "";
 
-               
+                // Drawers
+                frmDesktopCalculator.cmbCustomDrawerCount.value = 3;
+                frmDesktopCalculator.radDrawer1.checked = true;
+                frmDesktopCalculator.radVeneer.checked = true;
             }
             
             
@@ -573,15 +581,83 @@ echo $radWood;
             // --------------------------------------------------------------------------------
             function Body_OnLoad()
             {
-                var frmSimpleCalculator = document.getElementById("frmDesktopCalculator");
-
+                var frmSimpleCalculator = document.getElementById("frmDesktopCalculator");            
+                var radDrawers = "<?php echo $radDrawerID ?>";
+                var radWood = "<?php echo $radWoodID ?>";
+                
+                // Set the values for the square footage
                 frmSimpleCalculator.txtWidth.value = "<?php echo GetFormValue( "txtWidth", "" ) ?>";
                 frmSimpleCalculator.txtDepth.value = "<?php echo GetFormValue( "txtDepth", "" ) ?>";
                 frmSimpleCalculator.txtPricePerFoot.value = "<?php echo GetFormValue( "txtPricePerFoot", "" ) ?>";
                 frmSimpleCalculator.txtSizeTotal.value = "<?php echo "$" . number_format($decSizePrice, 2) ?>";
                 frmSimpleCalculator.txtSquareFeet.value = "<?php echo $decSquareFeet ?>";
-                frmSimpleCalculator.cmbCustomDrawerCount.value = <?php echo GetFormValue("cmbCustomDrawerCount","")?>
-            }            
+                frmSimpleCalculator.cmbCustomDrawerCount.value = <?php echo GetFormValue("cmbCustomDrawerCount","")?>;
+        
+                // Set the values for the drawers
+                if (radDrawers == 'radDrawer1')
+                {
+                    frmSimpleCalculator.radDrawer1.checked = true;
+                }
+                else if (radDrawers == 'radDrawer2')
+                {
+                    frmSimpleCalculator.radDrawer2.checked = true;
+                }
+                else if (radDrawers == 'radDrawerCustom')
+                {
+                    frmSimpleCalculator.radDrawerCustom.checked = true;
+                }
+                
+                // Set the values for the wood
+                if (radWood == 'radVeneer')
+                {
+                    frmSimpleCalculator.radVeneer.checked = true;
+                }
+                else if (radWood == 'radOak')
+                {
+                    frmSimpleCalculator.radOak.checked = true;
+                }                                
+                else if (radWood == 'radMaple')
+                {
+                    frmSimpleCalculator.radMaple.checked = true;
+                }                
+                else if (radWood == 'radCherry')
+                {
+                    frmSimpleCalculator.radCherry.checked = true;
+                }                
+                              
+            }
+            
+
+            // --------------------------------------------------------------------------------
+            // Name: SquareFeet
+            // Abstract:  Upon changing the values, change the forms
+            // --------------------------------------------------------------------------------
+            function InFormCalculations()
+            {
+				// Get form variables
+             	var frmDesktopCalculator = document.getElementById("frmDesktopCalculator");
+             	var decWidth = frmDesktopCalculator.txtWidth.value;
+             	var decDepth = frmDesktopCalculator.txtDepth.value; 
+             	var decSquareFeet = frmDesktopCalculator.txtSquareFeet.value;
+             	var decPricePerFoot = frmDesktopCalculator.txtPricePerFoot.value; 
+				var decSizeTotal = 0;             	             	                       	
+				var decSquareFeet = 0;
+
+				// Divide the width and depth by 12
+				decWidth = decWidth / 12;
+				decDepth = decDepth / 12;
+
+				// Find the square feet
+				decSquareFeet = decWidth * decDepth;
+				
+				// Find the total cost according to size				
+				decSizeTotal = decSquareFeet * decPricePerFoot;				
+				
+				// Post the updated values to the form
+				frmDesktopCalculator.txtSquareFeet.value = parseFloat(decSquareFeet).toFixed(2);
+				frmDesktopCalculator.txtSizeTotal.value = "$" + decSizeTotal.toFixed(2) ;				
+				
+            }
 
         </script>
 
@@ -590,8 +666,8 @@ echo $radWood;
 <body onload="Body_OnLoad();">
 	
 	Name: Brandon Roberts <br />
-	Class: IT-103 VB.Net #3 <br />
-	Abstract: Homework 6 - Step 2 - Server Side Controls - Hard <br />
+	Class: PHP <br />
+	Abstract: Homework 6 - Step 2 - Server Side Controls - Hard - Complete(unchecked) <br />
 	<br />
 	
 	<div class="BlackBar" > Homework 6 Step 2 - Server Side Controls - Hard </div>
@@ -614,7 +690,7 @@ echo $radWood;
 	
 	            <!-- Width -->
 	            <label class="" for="txtWidth"> Width (inches): <br />
-	                <input type="text" name="txtWidth" id="txtWidth"  value="" maxlength="3"  /> <br />
+	                <input type="text" name="txtWidth" id="txtWidth" onblur="InFormCalculations()" > <br />
 	            </label>
 	
 	            <!-- * -->
@@ -622,8 +698,7 @@ echo $radWood;
 	
 	            <!-- Depth -->
 	            <label class="" for="txtDepth"> Depth (inches): <br />
-	                <input type="text" name="txtDepth" id="txtDepth" runat="server"
-	                maxlength="3" size="10" AutoPostBack="true"/> <br />
+	                <input type="text" name="txtDepth" id="txtDepth" onblur="InFormCalculations()" /> <br />
 	            </label>
 	
 	            <!-- Blank -->
@@ -638,8 +713,8 @@ echo $radWood;
 	
 	            <!-- SquareFeet -->
 	            <label class="" for="txtSquareFeet"> Square Feet: <br />
-	                <input type="text" name="txtSquareFeet" id="txtSquareFeet" runat="server"
-	                maxlength="3" AutoPostBack="true" ReadOnly="true"/> <br />
+	                <input type="text" name="txtSquareFeet" id="txtSquareFeet"
+	                maxlength="3" ReadOnly="true" /> <br />
 	            </label>
 	
 	            <!-- * -->
@@ -647,8 +722,7 @@ echo $radWood;
 	
 	            <!-- Price Per Foot -->
 	            <label class="" for="txtPricePerFoot"> Price / Foot: <br />
-	                <input type="text" name="txtPricePerFoot" id="txtPricePerFoot" runat="server"
-	                maxlength="3" AutoPostBack="true"/> <br />
+	                <input type="text" name="txtPricePerFoot" id="txtPricePerFoot" onblur="InFormCalculations()"/> <br />
 	            </label>
 	
 	            <!-- = -->
@@ -745,7 +819,7 @@ echo $radWood;
 	
 	            <!-- Cherry -->
 	            <label class="" for="radCherry">
-	                <input type="radio" name="radWood" id="radCherry" value="radCherry ">
+	                <input type="radio" name="radWood" id="radCherry" value="radCherry" >
 	                Cherry (+$75)
 	            </label>                       
 	
